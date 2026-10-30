@@ -1,0 +1,423 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imra's Chaos Test 😂</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 15px;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#d9f7ff,#f2e3ff,#fff0d9);
+  color: #292943;
+}
+
+.container {
+  width: 100%;
+  max-width: 650px;
+  background: white;
+  padding: 30px;
+  border-radius: 25px;
+  box-shadow: 0 15px 50px #7774;
+  text-align: center;
+}
+
+h1 { font-size: 42px; }
+h2 { font-size: 27px; }
+
+p {
+  color: #666;
+  line-height: 1.6;
+}
+
+button {
+  border: none;
+  padding: 15px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 7px;
+  background: #7668e8;
+  color: white;
+}
+
+button:hover {
+  transform: scale(1.04);
+}
+
+input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.answers button {
+  background: #f0edff;
+  color: #333;
+  min-height: 65px;
+}
+
+.answers button:hover {
+  background: #dcd5ff;
+}
+
+.hidden { display: none; }
+
+.emoji { font-size: 55px; }
+
+#progress {
+  height: 8px;
+  background: #eee;
+  border-radius: 20px;
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+#bar {
+  height: 100%;
+  width: 0%;
+  background: #7668e8;
+  transition: .3s;
+}
+
+@media(max-width:500px) {
+  .answers { grid-template-columns: 1fr; }
+  .container { padding: 20px; }
+  h1 { font-size: 34px; }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="progress">
+<div id="bar"></div>
+</div>
+
+<section id="start">
+<div class="emoji">🤡😂</div>
+
+<h1>IMRA'S CHAOS TEST</h1>
+
+<p>
+Welcome to the most useless scientific test ever created.
+5 questions. Unlimited nonsense.
+Let's discover how crazy you really are!
+</p>
+
+<input id="name" placeholder="Enter your name...">
+
+<br><br>
+
+<button onclick="startGame()">
+START THE NONSENSE 🚀
+</button>
+</section>
+
+<section id="game" class="hidden">
+
+<h2 id="question"></h2>
+<p id="subtitle"></p>
+
+<div class="answers" id="answers"></div>
+
+</section>
+
+<section id="result" class="hidden">
+
+<div class="emoji">🏆</div>
+
+<h1 id="resultTitle"></h1>
+
+<h2 id="score"></h2>
+
+<p id="resultText"></p>
+
+<button onclick="certificate()">
+GET YOUR CERTIFICATE 📜
+</button>
+
+</section>
+
+<section id="final" class="hidden">
+
+<div class="emoji">😂🤝</div>
+
+<h1 id="finalTitle"></h1>
+
+<p>
+Congratulations! You are officially a certified
+friendship legend.
+
+Funny, unpredictable and occasionally impossible
+to handle.
+
+Thanks for making life less boring!
+</p>
+
+<h2>Are you a certified legend?</h2>
+
+<button onclick="celebrate()">
+YES, I'M ICONIC 😎
+</button>
+
+<button onclick="wrongAnswer()">
+NO, I'M NORMAL 🙄
+</button>
+
+<p id="ending"></p>
+
+<button onclick="location.reload()">
+PLAY AGAIN 🔁
+</button>
+
+</section>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+q:"If you get stuck on an island, what do you bring?",
+sub:"Very serious survival question.",
+answers:[
+["Unlimited snacks 🍕",3],
+["Wi-Fi router 📶",2],
+["A pillow 😴",2],
+["A friend to blame 🤡",3]
+]
+},
+
+{
+q:"Choose your superpower!",
+sub:"Think carefully.",
+answers:[
+["Make food appear 🍔",3],
+["Sleep anywhere 😴",2],
+["Win every argument 🗣️",2],
+["Disappear when work arrives 🏃",3]
+]
+},
+
+{
+q:"You receive a mysterious box. What do you do?",
+sub:"The box may contain absolutely nothing.",
+answers:[
+["Shake it aggressively 📦",2],
+["Ask the group chat 😂",3],
+["Open it like a hero 🦸",2],
+["Sell it online 💸",3]
+]
+},
+
+{
+q:"What's your role in a group project?",
+sub:"Be honest!",
+answers:[
+["The planner 📋",2],
+["The snack manager 🍿",3],
+["Last minute miracle 😭",3],
+["Motivational support 😎",2]
+]
+},
+
+{
+q:"Choose your friendship motto!",
+sub:"This answer will be remembered forever.",
+answers:[
+["Together we are trouble 🤡",3],
+["No plans, just vibes ✨",3],
+["Share snacks, not passwords 🔐",2],
+["Roast first, help always 😂",3]
+]
+}
+
+];
+
+let current = 0;
+let points = 0;
+let player = "Imra";
+
+function startGame() {
+
+player = document.getElementById("name").value.trim() || "Imra";
+
+current = 0;
+points = 0;
+
+show("game");
+loadQuestion();
+
+}
+
+function show(id) {
+
+["start","game","result","final"].forEach(section => {
+
+document.getElementById(section)
+.classList.toggle("hidden", section !== id);
+
+});
+
+}
+
+function loadQuestion() {
+
+let q = questions[current];
+
+document.getElementById("question").innerText = q.q;
+
+document.getElementById("subtitle").innerText = q.sub;
+
+document.getElementById("bar").style.width =
+(current / questions.length * 100) + "%";
+
+document.getElementById("answers").innerHTML = "";
+
+q.answers.forEach(answer => {
+
+let button = document.createElement("button");
+
+button.innerText = answer[0];
+
+button.onclick = function() {
+
+points += answer[1];
+
+current++;
+
+if(current < questions.length) {
+
+loadQuestion();
+
+} else {
+
+showResult();
+
+}
+
+};
+
+document.getElementById("answers").appendChild(button);
+
+});
+
+}
+
+function showResult() {
+
+show("result");
+
+document.getElementById("bar").style.width = "100%";
+
+let percentage = Math.round(points / 15 * 100);
+
+document.getElementById("score").innerText =
+percentage + "% CHAOS LEVEL";
+
+if(percentage >= 90) {
+
+document.getElementById("resultTitle").innerText =
+"CHAOS LEGEND 👑";
+
+document.getElementById("resultText").innerText =
+player + ", scientists are confused by your level of craziness!";
+
+} else if(percentage >= 75) {
+
+document.getElementById("resultTitle").innerText =
+"VIBE SPECIALIST 🏆";
+
+document.getElementById("resultText").innerText =
+player + ", your friendship energy is dangerously powerful!";
+
+} else {
+
+document.getElementById("resultTitle").innerText =
+"SNEAKY TROUBLEMAKER 🤣";
+
+document.getElementById("resultText").innerText =
+player + ", you are suspiciously full of mischief!";
+
+}
+
+}
+
+function certificate() {
+
+show("final");
+
+document.getElementById("finalTitle").innerText =
+"DEAR " + player + "... 😂";
+
+}
+
+function celebrate() {
+
+document.getElementById("ending").innerText =
+"CORRECT! 🎉 YOU ARE OFFICIALLY ICONIC!";
+
+for(let i=0; i<35; i++) {
+
+let emoji = document.createElement("div");
+
+emoji.innerText = ["🎉","😂","⭐","🤝","🍕"][
+Math.floor(Math.random()*5)
+];
+
+emoji.style.position = "fixed";
+emoji.style.left = Math.random()*100 + "vw";
+emoji.style.top = "-30px";
+emoji.style.fontSize = "25px";
+emoji.style.animation = "fall 3s linear";
+
+document.body.appendChild(emoji);
+
+setTimeout(() => emoji.remove(),3000);
+
+}
+
+}
+
+function wrongAnswer() {
+
+document.getElementById("ending").innerText =
+"ERROR 404 😂 NORMAL PERSON NOT FOUND!";
+
+}
+
+</script>
+
+<style>
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(720deg);
+  }
+}
+</style>
+
+</body>
+</html>
